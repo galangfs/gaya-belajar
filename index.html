@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -166,7 +166,8 @@
 <body>
 <div id="root"></div>
 
-<script type="text/babel" data-presets="react,stage-3">
+<!-- PERBAIKAN 1: Mengganti react,stage-3 menjadi env,react -->
+<script type="text/babel" data-presets="env,react">
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
 /* ============================= DATA ============================= */
