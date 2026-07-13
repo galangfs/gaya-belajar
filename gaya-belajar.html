@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cek Gaya Belajar Bahasa Indonesia</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background:#f0f4f8;
+            margin:0;
+            padding:20px;
+        }
+
+        .container{
+            max-width:850px;
+            margin:auto;
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 4px 15px rgba(0,0,0,.1);
+        }
+
+        h1{
+            text-align:center;
+            color:#1e3a5f;
+        }
+
+        .progress-container{
+            width:100%;
+            background:#ddd;
+            border-radius:20px;
+            margin:20px 0;
+        }
+
+        .progress{
+            width:0%;
+            height:20px;
+            background:#4CAF50;
+            border-radius:20px;
+            transition:0.3s;
+        }
+
+        .question{
+            margin-top:25px;
+            padding:20px;
+            background:#fafafa;
+            border-radius:10px;
+        }
+
+        .option{
+            display:block;
+            margin:10px 0;
+        }
+
+        input[type=text]{
+            width:100%;
+            padding:10px;
+            margin-bottom:15px;
+            border:1px solid #ccc;
+            border-radius:8px;
+        }
+
+        button{
+            width:100%;
+            padding:15px;
+            background:#1e88e5;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#1565c0;
+        }
+
+        #result{
+            display:none;
+            margin-top:30px;
+            padding:20px;
+            background:#eef8ee;
+            border-radius:10px;
+        }
+
+        .score{
+            font-size:18px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📚 Cek Gaya Belajar Bahasa Indonesia</h1>
+
+    <p>
+        Kenali cara belajar yang paling sesuai dengan diri Anda agar pembelajaran Bahasa Indonesia menjadi lebih menyenangkan.
+    </p>
+
+    <label>Nama</label>
+    <input type="text" id="nama">
+
+    <label>Kelas</label>
+    <input type="text" id="kelas">
+
+    <div class="progress-container">
+        <div class="progress" id="progressBar"></div>
+    </div>
+
+    <div id="questions"></div>
+
+    <button onclick="hitung()">Lihat Hasil</button>
+
+    <div id="result"></div>
+
+    <h3>Bagikan ke Peserta Didik</h3>
+    <div id="qrcode"></div>
+
+</div>
+
+<script>
+
+    const data = [
+        ["Saya lebih tertarik belajar jika guru ...",
+            "menjelaskan dan berdiskusi",
+            "menampilkan gambar atau video",
+            "mengajak melakukan aktivitas"],
+
+        ["Saat tidak memahami pelajaran saya lebih suka ...",
+            "bertanya kepada guru",
+            "melihat contoh atau catatan",
+            "mencoba sendiri"],
+
+        ["Saya lebih fokus ketika ...",
+            "guru menjelaskan",
+            "guru menggunakan media visual",
+            "terlibat dalam kegiatan"],
+
+        ["Saya lebih menyukai pembelajaran yang ...",
+            "banyak diskusi",
+            "menggunakan media menarik",
+            "melibatkan praktik"],
+
+        ["Saat bekerja kelompok saya lebih senang ...",
+            "menyampaikan ide",
+            "membuat tampilan hasil",
+            "mengatur pelaksanaan kegiatan"],
+
+        ["Saya lebih mudah memahami petunjuk jika ...",
+            "dijelaskan secara lisan",
+            "dituliskan",
+            "dicontohkan"],
+
+        ["Jika diberi pilihan saya lebih suka belajar dengan cara ...",
+            "mendengarkan penjelasan",
+            "membaca atau melihat contoh",
+            "praktik langsung"],
+
+        ["Kegiatan yang paling saya sukai adalah ...",
+            "diskusi",
+            "menonton video atau membaca",
+            "simulasi atau permainan"],
+
+        ["Pembelajaran ideal menurut saya adalah ...",
+            "banyak kesempatan berbicara",
+            "banyak media visual",
+            "banyak aktivitas"],
+
+        ["Saya merasa paling bersemangat ketika ...",
+            "terlibat dalam diskusi",
+            "melihat media menarik",
+            "melakukan praktik"]
+    ];
+
+    let html="";
+
+    // PERBAIKAN 1: Tambahkan backtick (`) untuk membungkus HTML
+    data.forEach((q,i)=>{
+        html += `
+<div class='question'>
+<b>${i+1}. ${q[0]}</b><br><br>
+
+<label class='option'>
+<input type='radio' name='q${i}' value='A' onchange='updateProgress()'>
+A. ${q[1]}
+</label>
+
+<label class='option'>
+<input type='radio' name='q${i}' value='B' onchange='updateProgress()'>
+B. ${q[2]}
+</label>
+
+<label class='option'>
+<input type='radio' name='q${i}' value='C' onchange='updateProgress()'>
+C. ${q[3]}
+</label>
+
+</div>
+`;
+    });
+
+    document.getElementById("questions").innerHTML = html;
+
+    function updateProgress(){
+
+        let answered=0;
+
+// PERBAIKAN 2: Tambahkan backtick pada selector
+        for(let i=0;i<data.length;i++){
+            if(document.querySelector(`input[name=q${i}]:checked`)){
+                answered++;
+            }
+        }
+
+        document.getElementById("progressBar").style.width =
+            (answered/data.length*100)+"%";
+    }
+
+    function hitung(){
+
+        let A=0,B=0,C=0;
+        for(let i=0;i<data.length;i++){
+
+// PERBAIKAN 3: Tambahkan backtick pada selector
+            let answer=document.querySelector(`input[name=q${i}]:checked`);
+
+            if(!answer){
+                alert("Mohon jawab seluruh pertanyaan.");
+                return;
+            }
+
+            if(answer.value=="A") A++;
+            if(answer.value=="B") B++;
+            if(answer.value=="C") C++;
+        }
+
+        let hasil="";
+        let rekomendasi="";
+
+        if(A>=B && A>=C){
+            hasil="AUDITORI";
+            rekomendasi="Anda lebih menyukai diskusi, presentasi, tanya jawab, dan penjelasan langsung.";
+        }
+        else if(B>=A && B>=C){
+            hasil="VISUAL";
+            rekomendasi="Anda lebih menyukai video, infografis, gambar, dan contoh-contoh menarik.";
+        }
+        else{
+            hasil="KINESTETIK";
+            rekomendasi="Anda lebih menyukai praktik, proyek, bermain peran, dan aktivitas kelompok.";
+        }
+
+// Mengambil nilai nama dan kelas dengan aman
+        let namaVal = document.getElementById("nama").value;
+        let kelasVal = document.getElementById("kelas").value;
+
+        document.getElementById("result").style.display="block";
+
+// PERBAIKAN 4: Tambahkan backtick untuk membungkus hasil HTML
+        document.getElementById("result").innerHTML= `
+<h2>Hasil Asesmen</h2>
+
+<p><b>Nama:</b> ${namaVal}</p>
+<p><b>Kelas:</b> ${kelasVal}</p>
+
+<p class='score'>🎧 Auditori : ${A}</p>
+<p class='score'>👀 Visual : ${B}</p>
+<p class='score'>🏃 Kinestetik : ${C}</p>
+
+<h2>Gaya Belajar Dominan: ${hasil}</h2>
+
+<p>${rekomendasi}</p>
+`;
+    }
+
+    new QRCode(document.getElementById("qrcode"),{
+        text:window.location.href,
+        width:180,
+        height:180
+    });
+
+</script>
+
+</body>
+</html>
